@@ -1,13 +1,13 @@
-## Relations structure: 
+## Relations: 
 
-| Model       | Related model    | Type of relations |
-|-------------|------------------|-------------------|
-| Event       | User             | belongsTo         |
-| Event       | Participant      | hasMany           |
-| Participant | User             | belongsTo         |
-| Participant | Event            | belongsTo         |
+| Model       | Type of relations | Related model |
+|-------------|-------------------|---------------|
+| Event       | belongsTo         | User          |
+| Event       | hasMany           | Participant   |
+| Participant | belongsTo         | User          |
+| Participant | belongsTo         | Event         |
 
-## Events table structure:
+## events table structure:
 
 | Field       | Type            | Null | Key  | Default | Extra           |
 |-------------|-----------------|------|------|---------|-----------------|
@@ -20,7 +20,7 @@
 | created_at  | timestamp       | YES  |      | NULL    |                 |
 | updated_at  | timestamp       | YES  |      | NULL    |                 |
 
-## Participants table structure:
+## participants table structure:
 
 | Field      | Type            | Null | Key  | Default | Extra           |
 |------------|-----------------|------|------|---------|-----------------|
@@ -30,7 +30,7 @@
 | created_at | timestamp       | YES  |      | NULL    |                 |
 | updated_at | timestamp       | YES  |      | NULL    |                 |
 
-## Users table structure:
+## users table structure:
 
 | Field               | Type            | Null | Key  | Default | Extra           |
 |---------------------|-----------------|------|------|---------|-----------------|
