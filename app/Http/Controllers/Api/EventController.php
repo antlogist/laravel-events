@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreEventRequest;
+use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EventController extends Controller
 {
@@ -13,15 +15,20 @@ class EventController extends Controller
      */
     public function index()
     {
-        //
+        return Event::all();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreEventRequest $request)
     {
-        //
+        $data = $request->all();
+        $data = [...$data, 'user_id' => 1];
+
+        $event = Event::create($data);
+
+        return $event;
     }
 
     /**
@@ -29,15 +36,17 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        //
+        return $event;
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Event $event)
+    public function update(UpdateEventRequest $request, Event $event)
     {
-        //
+        $event->update($request->all());
+
+        return $event;
     }
 
     /**
@@ -45,6 +54,8 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        $event->delete();
+
+        return response(status: 204);
     }
 }
