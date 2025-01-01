@@ -11,4 +11,4 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource('events', EventController::class);
 
-Route::apiResource('events.participants', ParticipantController::class)->scoped(['participant' => 'event']);
+Route::apiResource('events.participants', ParticipantController::class)->except(['update']);
