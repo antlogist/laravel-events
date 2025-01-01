@@ -7,9 +7,18 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class EventController extends Controller
+class EventController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show'])
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -24,7 +33,7 @@ class EventController extends Controller
     public function store(StoreEventRequest $request)
     {
         $data = $request->all();
-        $data = [...$data, 'user_id' => 1];
+        $data = [...$data, 'user_id' => $request->user()->id];
 
         $event = Event::create($data);
 
