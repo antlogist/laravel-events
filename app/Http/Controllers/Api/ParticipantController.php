@@ -7,9 +7,19 @@ use App\Http\Resources\ParticipantResource;
 use App\Models\Participant;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate;
 
-class ParticipantController extends Controller
+class ParticipantController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum')
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -51,8 +61,14 @@ class ParticipantController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $event, Participant $participant)
+    public function destroy(Event $event, Participant $participant)
     {
+        if (! Gate::allows('delete-participant', [$event, $participant])) {
+            return response()->json([
+                'message' => 'Not allowed'
+            ], 403);
+        }
+
         $participant->delete();
 
         return response(status: 204);
