@@ -9,6 +9,7 @@ use App\Http\Resources\EventResource;
 use App\Models\Event;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate;
 
 class EventController extends Controller implements HasMiddleware
 {
@@ -54,6 +55,12 @@ class EventController extends Controller implements HasMiddleware
      */
     public function update(UpdateEventRequest $request, Event $event)
     {
+        if (! Gate::allows('update-event', $event)) {
+            return response()->json([
+                'message' => 'Not allowed'
+            ], 403);
+        }
+
         $event->update($request->all());
 
         return new EventResource($event);
@@ -64,6 +71,12 @@ class EventController extends Controller implements HasMiddleware
      */
     public function destroy(Event $event)
     {
+        if (! Gate::allows('delete-event', $event)) {
+            return response()->json([
+                'message' => 'Not allowed'
+            ], 403);
+        }
+
         $event->delete();
 
         return response(status: 204);
