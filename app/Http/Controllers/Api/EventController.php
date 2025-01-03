@@ -7,24 +7,20 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
 
-class EventController extends Controller implements HasMiddleware
+class EventController extends Controller
 {
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('auth:sanctum', except: ['index', 'show'])
-        ];
-    }
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        if (!Gate::allows('viewAny', Event::class)) {
+            abort(403);
+        }
+
         return EventResource::collection(Event::with('user', 'participants')->get());
     }
 
@@ -55,10 +51,14 @@ class EventController extends Controller implements HasMiddleware
      */
     public function update(UpdateEventRequest $request, Event $event)
     {
-        if (! Gate::allows('update-event', $event)) {
-            return response()->json([
-                'message' => 'Not allowed'
-            ], 403);
+        // if (! Gate::allows('update-event', $event)) {
+        //     return response()->json([
+        //         'message' => 'Not allowed'
+        //     ], 403);
+        // }
+
+        if (!Gate::allows('update', $event)) {
+            abort(403);
         }
 
         $event->update($request->all());
@@ -71,10 +71,14 @@ class EventController extends Controller implements HasMiddleware
      */
     public function destroy(Event $event)
     {
-        if (! Gate::allows('delete-event', $event)) {
-            return response()->json([
-                'message' => 'Not allowed'
-            ], 403);
+        // if (! Gate::allows('delete-event', $event)) {
+        //     return response()->json([
+        //         'message' => 'Not allowed'
+        //     ], 403);
+        // }
+
+        if (!Gate::allows('delete', $event)) {
+            abort(403);
         }
 
         $event->delete();

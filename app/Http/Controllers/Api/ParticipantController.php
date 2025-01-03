@@ -7,24 +7,20 @@ use App\Http\Resources\ParticipantResource;
 use App\Models\Participant;
 use App\Models\Event;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
 
-class ParticipantController extends Controller implements HasMiddleware
+class ParticipantController extends Controller
 {
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('auth:sanctum')
-        ];
-    }
 
     /**
      * Display a listing of the resource.
      */
     public function index(Event $event)
     {
+        if (!Gate::allows('viewAny', Event::class)) {
+            abort(403);
+        }
+        
         return ParticipantResource::collection(
             $event->participants()->latest()->paginate()
         );
@@ -35,6 +31,10 @@ class ParticipantController extends Controller implements HasMiddleware
      */
     public function store(Event $event)
     {
+        if (!Gate::allows('create', Event::class)) {
+            abort(403);
+        }
+
         $participant = $event->participants()->create([
             'user_id' => 1
         ]);
@@ -47,6 +47,10 @@ class ParticipantController extends Controller implements HasMiddleware
      */
     public function show(Event $event, Participant $participant)
     {
+        if (!Gate::allows('view', Event::class)) {
+            abort(403);
+        }
+
         return new ParticipantResource($participant);
     }
 
