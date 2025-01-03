@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Event;
 use App\Models\Participant;
 use App\Models\User;
+use App\Policies\EventPolicy;
+use App\Policies\ParticipantPolicy;
 // use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ProvidersAuthServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
