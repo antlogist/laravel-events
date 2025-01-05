@@ -20,7 +20,7 @@ class ParticipantController extends Controller
         if (!Gate::allows('viewAny', Event::class)) {
             abort(403);
         }
-        
+
         return ParticipantResource::collection(
             $event->participants()->latest()->paginate()
         );
@@ -29,14 +29,14 @@ class ParticipantController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Event $event)
+    public function store(Request $request, Event $event)
     {
         if (!Gate::allows('create', Event::class)) {
             abort(403);
         }
 
         $participant = $event->participants()->create([
-            'user_id' => 1
+            'user_id' => $request->user()->id,
         ]);
 
         return new ParticipantResource($participant);
